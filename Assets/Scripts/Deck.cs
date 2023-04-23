@@ -364,6 +364,7 @@ public class Deck : MonoBehaviour
         b1000.interactable = true;
         finalMessage.text = "";
         mensajeDealerPts.text = "";
+        bank.text = "Tienes " + bankValue.ToString() + " €";
         player.GetComponent<CardHand>().Clear();
         dealer.GetComponent<CardHand>().Clear();
         cardIndex = 0;
