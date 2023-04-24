@@ -15,8 +15,9 @@ public class Deck : MonoBehaviour
     public Text mensajePuntos;
     public Text mensajeDealerPts;
     public Button b10;
+    public Button b20;
+    public Button b50;
     public Button b100;
-    public Button b1000;
     public Text bank;
     public Text bets;
     public int bankValue;
@@ -151,16 +152,18 @@ public class Deck : MonoBehaviour
                     hitButton.interactable = false;
                     stickButton.interactable = false;
                     b10.interactable = false;
+                    b20.interactable = false;
+                    b50.interactable = false;
                     b100.interactable = false;
-                    b1000.interactable = false;
                 }
 
                 else if (dealer.GetComponent<CardHand>().points == 21)
                 {
                     finalMessage.text = "HAS PERDIDO";
                     b10.interactable = false;
+                    b20.interactable = false;
+                    b50.interactable = false;
                     b100.interactable = false;
-                    b1000.interactable = false;
                 }
             }
         }
@@ -168,8 +171,9 @@ public class Deck : MonoBehaviour
         {
             finalMessage.text = "¡Ya no tienes Dinero! Pulsa Para Jugar de Nuevo";
             b10.interactable = false;
+            b20.interactable = false;
+            b50.interactable = false;
             b100.interactable = false;
-            b1000.interactable = false;
             hitButton.interactable = false;
             stickButton.interactable = false;
             bankValue = 1000;
@@ -240,8 +244,37 @@ public class Deck : MonoBehaviour
         bankValue -= bet;
         bank.text = "Tienes " + bankValue + " €";
         b10.interactable = false;
+        b20.interactable = false;
+        b50.interactable = false;
         b100.interactable = false;
-        b1000.interactable = false;
+        hitButton.interactable = true;
+        stickButton.interactable = true;
+        bets.text = "";
+    }
+
+    public void x20()
+    {
+        bet = 20;
+        bankValue -= bet;
+        bank.text = "Tienes " + bankValue + " €";
+        b10.interactable = false;
+        b20.interactable = false;
+        b50.interactable = false;
+        b100.interactable = false;
+        hitButton.interactable = true;
+        stickButton.interactable = true;
+        bets.text = "";
+    }
+
+    public void x50()
+    {
+        bet = 50;
+        bankValue -= bet;
+        bank.text = "Tienes " + bankValue + " €";
+        b10.interactable = false;
+        b20.interactable = false;
+        b50.interactable = false;
+        b100.interactable = false;
         hitButton.interactable = true;
         stickButton.interactable = true;
         bets.text = "";
@@ -253,21 +286,9 @@ public class Deck : MonoBehaviour
         bankValue -= bet;
         bank.text = "Tienes " + bankValue + " €";
         b10.interactable = false;
+        b20.interactable = false;
+        b50.interactable = false;
         b100.interactable = false;
-        b1000.interactable = false;
-        hitButton.interactable = true;
-        stickButton.interactable = true;
-        bets.text = "";
-    }
-
-    public void x1000()
-    {
-        bet = 1000;
-        bankValue -= bet;
-        bank.text = "Tienes " + bankValue + " €";
-        b10.interactable = false;
-        b100.interactable = false;
-        b1000.interactable = false;
         hitButton.interactable = true;
         stickButton.interactable = true;
         bets.text = "";
@@ -360,8 +381,9 @@ public class Deck : MonoBehaviour
     public void PlayAgain()
     {
         b10.interactable = true;
+        b20.interactable = true;
+        b50.interactable = true;
         b100.interactable = true;
-        b1000.interactable = true;
         finalMessage.text = "";
         mensajeDealerPts.text = "";
         bank.text = "Tienes " + bankValue.ToString() + " €";
