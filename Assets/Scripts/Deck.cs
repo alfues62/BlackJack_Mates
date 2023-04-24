@@ -41,11 +41,6 @@ public class Deck : MonoBehaviour
 
     private void InitCardValues()
     {
-        /*TODO:
-         * Asignar un valor a cada una de las 52 cartas del atributo "values".
-         * En principio, la posición de cada valor se deberá corresponder con la posición de faces. 
-         * Por ejemplo, si en faces[1] hay un 2 de corazones, en values[1] debería haber un 2.
-         */
 
         for (int i = 0; i < values.Length; i++)
         {
@@ -90,12 +85,6 @@ public class Deck : MonoBehaviour
 
     private void ShuffleCards()
     {
-        /*TODO:
-         * Barajar las cartas aleatoriamente.
-         * El método Random.Range(0,n), devuelve un valor entre 0 y n-1
-         * Si lo necesitas, puedes definir nuevos arrays.
-         */
-
         for (int i = 0; i < values.Length; i++)
         {
             var j = Random.Range(0, 52);
@@ -140,15 +129,12 @@ public class Deck : MonoBehaviour
                 PushDealer();
                 hitButton.interactable = false;
                 stickButton.interactable = false;
-                /*TODO:
-                 * Si alguno de los dos obtiene Blackjack, termina el juego y mostramos mensaje
-                 */
 
                 mensajePuntos.text = "Tienes " + player.GetComponent<CardHand>().points + " puntos";
-                //
                 if (player.GetComponent<CardHand>().points == 21)
                 {
                     finalMessage.text = "HAS GANADO SIN SIQUIERA JUGAR";
+                    dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
                     hitButton.interactable = false;
                     stickButton.interactable = false;
                     b10.interactable = false;
@@ -156,10 +142,10 @@ public class Deck : MonoBehaviour
                     b50.interactable = false;
                     b100.interactable = false;
                 }
-
                 else if (dealer.GetComponent<CardHand>().points == 21)
                 {
                     finalMessage.text = "HAS PERDIDO";
+                    dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
                     b10.interactable = false;
                     b20.interactable = false;
                     b50.interactable = false;
@@ -183,60 +169,57 @@ public class Deck : MonoBehaviour
 
     private void CalculateProbabilities()
     {
-        /*TODO:
-         * Calcular las probabilidades de:
-         * - Teniendo la carta oculta, probabilidad de que el dealer tenga más puntuación que el jugador
-         * - Probabilidad de que el jugador obtenga entre un 17 y un 21 si pide una carta
-         * - Probabilidad de que el jugador obtenga más de 21 si pide una carta          
-         */
-
         int playerPoints = player.GetComponent<CardHand>().points;
-        if (playerPoints <= 11)
-        {
-            probMessage.text = "0%";
-        }
-        else if (playerPoints == 12)
-        {
-            probMessage.text = "31%";
-        }
-        else if (playerPoints == 13)
-        {
-            probMessage.text = "39%";
-        }
-        else if (playerPoints == 14)
-        {
-            probMessage.text = "56%";
-        }
-        else if (playerPoints == 15)
-        {
-            probMessage.text = "58%";
-        }
-        else if (playerPoints == 16)
-        {
-            probMessage.text = "62%";
-        }
-        else if (playerPoints == 17)
-        {
-            probMessage.text = "69%";
-        }
-        else if (playerPoints == 18)
-        {
-            probMessage.text = "77%";
-        }
-        else if (playerPoints == 19)
-        {
-            probMessage.text = "85%";
-        }
-        else if (playerPoints == 20)
-        {
-            probMessage.text = "92%";
-        }
-        else
+        int dealerPoints = dealer.GetComponent<CardHand>().points;
+
+        if(playerPoints == 21)
         {
             probMessage.text = "100%";
         }
-
+        else
+        {
+            float probability = GetWinProbability(playerPoints, dealerPoints);
+            probMessage.text = Mathf.RoundToInt(probability * 100f) + "%";
+        }
     }
+
+    private float GetWinProbability(int playerPoints, int dealerPoints)
+    {
+        int playerTotal = 21 - playerPoints;
+        if (playerTotal <= 0)
+        {
+            return 0f; // si ya tenemos 21 o mas será 0 la probabilidad
+        }
+
+        int dealerTotal = 21 - dealerPoints;
+
+        int cardsLeft = 52 - cardIndex;
+        int winningCards = 0;
+
+        for (int i = 0; i < cardsLeft; i++)
+        {
+            int cardValue = values[cardIndex + i];
+            if (cardValue == 11 && playerTotal < 11)
+            {
+                cardValue = 1;
+            }
+
+            if (playerPoints + cardValue <= 21)
+            {
+                if (cardValue == 11 && dealerTotal < 11)
+                {
+                    cardValue = 1;
+                }
+
+                if (dealerPoints + cardValue <= 21)
+                {
+                    winningCards++;
+                }
+            }
+        }
+
+        return 1f - ((float)winningCards / cardsLeft); // Retorna la probabilidad invertida
+    }
 
     public void x10()
     {
@@ -296,21 +279,13 @@ public class Deck : MonoBehaviour
 
     public void Hit()
     {
-        /*TODO: 
-         * Si estamos en la mano inicial, debemos voltear la primera carta del dealer.
-         */
-
-        //Repartimos carta al jugador
         PushPlayer();
         mensajePuntos.text = "Tienes " + player.GetComponent<CardHand>().points + " puntos";
 
-
-        /*TODO:
-         * Comprobamos si el jugador ya ha perdido y mostramos mensaje
-         */
         if (player.GetComponent<CardHand>().points > 21)
         {
-            finalMessage.text = "Superaste los 21 Puntos. Perdiste.";
+            dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
+            finalMessage.text = "Superaste los 21 Puntos. Perdiste " + (bet).ToString() + " €.";
             hitButton.interactable = false;
             stickButton.interactable = false;
         }
@@ -318,17 +293,7 @@ public class Deck : MonoBehaviour
     }
 
     public void Stand()
-    {/*TODO: 
-         * Si estamos en la mano inicial, debemos voltear la primera carta del dealer.
-         */
-
-
-        /*TODO:
-         * Repartimos cartas al dealer si tiene 16 puntos o menos
-         * El dealer se planta al obtener 17 puntos o más
-         * Mostramos el mensaje del que ha ganado
-         */
-
+    {
         dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
         hitButton.interactable = false;
         stickButton.interactable = false;
@@ -343,30 +308,32 @@ public class Deck : MonoBehaviour
 
         if (dealerPoints == 21)
         {
-            finalMessage.text = "El dealer hizo BlackJack.";
+            finalMessage.text = "El dealer hizo BlackJack. ¡ "+ (bet).ToString() + " € Menos !";
+            bankValue -= bet * 2;
+            bank.text = "Tienes " + bankValue + " €";
         }
         else if (playerPoints == 21)
         {
-            finalMessage.text = "¡¡FELICIDADES!! ¡¡Has hecho BlackJack!! ";
+            finalMessage.text = "¡¡FELICIDADES!! ¡¡Has hecho BlackJack!! ¡ "+ (bet * 2).ToString() + " € Más ! ";
             bankValue += bet * 2;
             bank.text = "Tienes " + bankValue + " €";
         }
         else if (dealerPoints > 21)
         {
-            finalMessage.text = "El dealer se pasa ¡Ganas!.";
+            finalMessage.text = "El dealer se pasa ¡Ganas" + (bet * 2).ToString() + " € !.";
             bankValue += bet * 2;
             bank.text = "Tienes " + bankValue + " €";
         }
         else if (dealerPoints == playerPoints)
         {
             finalMessage.text = "¡Empatasteis!";
-            bankValue += bet * 2;
+            bankValue += bet;
             bank.text = "Tienes " + bankValue + " €";
         }
         else if (dealerPoints > playerPoints)
         {
-            finalMessage.text = "Te han superado ¡Has Perdido!";
-            bankValue += bet * 2;
+            finalMessage.text = "Te han superado ¡Has Perdido "+ (bet).ToString() + " € !";
+            bankValue -= bet * 2;
             bank.text = "Tienes " + bankValue + " €";
         }
         else
