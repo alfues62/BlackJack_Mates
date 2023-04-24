@@ -320,7 +320,7 @@ public class Deck : MonoBehaviour
         }
         else if (dealerPoints > 21)
         {
-            finalMessage.text = "El dealer se pasa ¡Ganas" + (bet * 2).ToString() + " € !.";
+            finalMessage.text = "El dealer se pasa ¡Ganas " + (bet * 2).ToString() + " € !.";
             bankValue += bet * 2;
             bank.text = "Tienes " + bankValue + " €";
         }
