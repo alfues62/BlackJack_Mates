@@ -148,6 +148,7 @@ public class Deck : MonoBehaviour
                 //
                 if (player.GetComponent<CardHand>().points == 21)
                 {
+                    dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
                     finalMessage.text = "HAS GANADO SIN SIQUIERA JUGAR";
                     hitButton.interactable = false;
                     stickButton.interactable = false;
@@ -159,6 +160,7 @@ public class Deck : MonoBehaviour
 
                 else if (dealer.GetComponent<CardHand>().points == 21)
                 {
+                    dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
                     finalMessage.text = "HAS PERDIDO";
                     b10.interactable = false;
                     b20.interactable = false;
@@ -310,6 +312,7 @@ public class Deck : MonoBehaviour
          */
         if (player.GetComponent<CardHand>().points > 21)
         {
+            dealer.GetComponent<CardHand>().cards[0].GetComponent<CardModel>().ToggleFace(true);
             finalMessage.text = "Superaste los 21 Puntos. Perdiste.";
             hitButton.interactable = false;
             stickButton.interactable = false;
